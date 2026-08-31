@@ -69,6 +69,20 @@ The onboarding finishes with a three-bucket report:
 
 Anything not in bucket 1 is an open item, never a footnote.
 
+## Set expectations for the human
+
+Onboarding runs mostly unattended, so the human's only real question is "do I need to be here, and when should I come back?" The onboarding agent keeps a status file whose header answers that at a glance:
+
+- **A fixed-denominator progress line** ("10 of 28 tasks complete"): the task list is written down before the run starts and never shrinks mid-run, so the number means the same thing on every machine.
+- **A "human needed" line that batches attention**: browser sign-ins cluster into one authentication pass, announced as a block ("come back in about 5 minutes for about six clicks"), which beats a ping per sign-in.
+- **A "now" line** saying what the agent is doing at this moment.
+
+Pushing the status file to the setup repo doubles as the check-in: anyone watching the repo sees progress without asking.
+
+## Instrument every run
+
+Onboarding improves run over run only if runs are comparable. The status file records machine details once (chip, memory, OS version), elapsed time per task inline, and token spend at each phase boundary. When a step runs slower or costs more than it did on the previous machine, that difference is a defect report waiting to be filed, not a shrug.
+
 ## The one-machine rule for scheduled workers
 
 Cron and launchd jobs that append to shared destinations (a spreadsheet, a database, an API with side effects) must run on exactly one machine. Two machines running the same appender produce duplicate rows, double sends, and rate-limit collisions that look like flaky infrastructure.
