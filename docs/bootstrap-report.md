@@ -1,9 +1,9 @@
 # Bootstrap report format
 
-The bootstrap ends with a three-bucket report: verified, installed but unverified, and skipped. Every line names the observable check that was (or was not) run. The report below is an invented example for illustration.
+An onboarding run ends with a three-bucket report: verified, installed but unverified, and skipped. Every line names the observable check that was (or was not) run. The report below is an invented example for illustration.
 
 ```
-Bootstrap report, machine: laptop-new, 2026-01-15
+Onboarding report, machine: laptop-new, 2026-01-15
 
 Verified
 - skills repo cloned and linked: /skills-list shows 42 skills in a fresh session
@@ -18,8 +18,9 @@ Installed but unverified
 Skipped
 - cloud CLI credentials: secret file not yet transferred (see secrets map,
   item 3); blocked, issue #12 filed
-- scheduled worker "daily-sync": deliberately deferred, old machine still
-  owns it (one-machine rule); unload-then-load scheduled for cutover day
+- scheduled worker "daily-sync": deliberately deferred, an established
+  machine still owns it (one-machine rule); unload-then-load transfer
+  scheduled
 ```
 
 Rules the example follows:
