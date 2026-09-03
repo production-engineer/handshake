@@ -38,6 +38,37 @@ Bundle every day-one browser authentication into one script, ordered by dependen
 
 Order rule: identity provider, then git host (everything clones through it), then anything that gates other tools, then the long tail.
 
+## The machine also has to feel right
+
+A machine can pass every functional check and still be the wrong machine to work on. Stock
+defaults fight habits: key repeat is slow, autocorrect mangles commit messages, the trackpad
+needs a full press, selecting text in the terminal silently overwrites the clipboard. None of
+these break a command, so none of them show up in a bootstrap's exit codes, and each one gets
+rediscovered and hand-fixed on every new machine.
+
+So environment configuration is part of the onboarding payload, not a personal touch applied
+afterwards. It arrives in two shapes, and a setup that only handles the first is half a setup:
+
+1. **Settings the OS exposes through an API**, writable by script. These belong in a declarative
+   list the setup repo owns: one row per setting, with the desired value and a note on where the
+   value came from.
+2. **Per-app config files**, which no OS settings API can reach. These belong in the setup repo
+   as tracked files that bootstrap copies into place.
+
+Two rules keep the second kind from rotting:
+
+- **The repo copy is the source of truth; the installed copy is disposable.** Fix a setting in
+  the repo and let every machine inherit it, rather than fixing it on the machine in front of
+  you. A machine-local edit is a fix with a lifespan of one laptop.
+- **Verify the key, not just the file.** Most config formats ignore a misspelled key silently,
+  so a "fixed" setting can be no setting at all. Prefer a config language with a validator, and
+  make bootstrap assert the observable effect the way it does for everything else.
+
+The trigger for adding something here is worth naming, because it usually arrives as an
+annoyance rather than a task: **when a stock default fights a habit, that is a setup defect, not
+a one-time fix.** The moment of noticing is the moment to push a row or a file to the setup repo.
+Fixing it only on the current machine guarantees meeting it again on the next one.
+
 ## Issues as the onboarding channel
 
 The onboarding agent on the new machine files defects and questions as GitHub issues on the setup repo. A maintainer, agent or human, on an established machine answers there and fixes at the source, so every future onboarding benefits. Issues give the channel history, threading, and visibility for free.
