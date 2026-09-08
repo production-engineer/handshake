@@ -30,6 +30,10 @@ Secrets move point to point: an encrypted tailnet transfer, AirDrop, a password 
 
 The map is safe to publish inside a private setup repo; the values never are. An onboarding run that reaches a secret-dependent step checks the path, and if the file is missing, reports it as skipped rather than failing silently or inventing a placeholder.
 
+Before moving a secret by hand, check whether a platform you already authenticate to will hand it back. A hosting platform's own command-line tool often returns a project's real environment variables to an authenticated caller, which makes the platform itself the rail. Where that holds, the map entry is a command rather than a file to carry across, and onboarding pulls the values instead of asking a human to copy them one at a time.
+
+Two cautions come with that convenience. The pull writes live credentials to disk, so the destination has to be a path the version control system ignores, and the onboarding run should confirm the ignore rule rather than assume it. And a platform that returns real values for one project may return masked ones for another, so the map records which projects the shortcut actually works for, not a blanket claim.
+
 ## SSO-first auth ordering
 
 A fresh machine needs a long series of browser sign-ins: git host, cloud consoles, SaaS dashboards. Done ad hoc, each one is a password hunt. Done in dependency order, almost all of them collapse into a single approve click.
@@ -37,6 +41,19 @@ A fresh machine needs a long series of browser sign-ins: git host, cloud console
 Bundle every day-one browser authentication into one script, ordered by dependency, with the identity provider sign-in first. That first sign-in is the only real password and 2FA moment. Every service behind the identity provider then authenticates with one click on "continue as you". The script opens each URL in sequence and waits for the human to confirm before moving to the next.
 
 Order rule: identity provider, then git host (everything clones through it), then anything that gates other tools, then the long tail.
+
+## Pin versions for commands, not for authentication
+
+A version pin that keeps a command-line tool's behavior stable can leave that tool unable to log in at all. Providers retire old authentication flows on the server, so a pinned version goes on running commands long after it has lost the ability to authenticate. Nothing warns you, because the pin is doing exactly what you asked.
+
+The failure shows up on a new machine, where there is no token yet. The symptom is a pair: an existing token reports itself invalid, and the login that should replace it fails with a message that the flow is disabled and the tool must be upgraded.
+
+Split the pin. Authenticate with the current version, run commands with the pinned one. Tools write their credential to a shared config file outside their own install directory, so the pinned version reads the token the newer version wrote, and the pin keeps governing everything you actually pinned it for.
+
+Two entries this earns in the setup repo:
+
+- **Record the pin, the reason for it, and the exemption.** A pin with no recorded reason gets copied forward forever, and a pin that silently covers authentication gets rediscovered on every machine.
+- **Treat a never-reauthenticated pin as an untested path.** A pinned tool that has held a valid token on every machine so far has never exercised its login, so the first machine to need one is the first machine to find out.
 
 ## The machine also has to feel right
 
@@ -81,6 +98,17 @@ Protocol:
 - Workarounds are allowed but must be documented in the issue, so the maintainer knows the new machine's state diverges until the real fix lands.
 
 The issue tracker outlives both sessions, so an onboarding interrupted mid-way resumes from the open issues, not from anyone's memory.
+
+## A recorded blocker is a dated claim
+
+Onboarding accumulates notes saying a path does not work: a credential the platform masks, an integration that rejects the machine, a command that fails. Every one of those notes describes the day it was written. Providers ship changes, permissions get granted, and the note stays exactly as confident as it was on day one.
+
+So a recorded blocker gets retested before anyone plans around it, and the cheapest moment to retest is when you are about to route around it. Retesting a stale "no" costs one command. Believing it costs a workaround, and every future machine inherits the workaround along with the note that justified it.
+
+Two habits keep the notes honest:
+
+- **Date every blocker and name what was tried**, the exact command and the exact failure, so a later run can repeat the same test rather than guess at it.
+- **Close the note when the blocker lifts**, in the same commit as whatever the lift unblocked, so no machine inherits a warning that stopped being true.
 
 ## Honest onboarding report
 
