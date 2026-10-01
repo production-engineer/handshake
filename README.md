@@ -81,6 +81,16 @@ Two rules keep the second kind from rotting:
   so a "fixed" setting can be no setting at all. Prefer a config language with a validator, and
   make bootstrap assert the observable effect the way it does for everything else.
 
+A third shape hides behind the first two: **state the OS picks for itself and never asks
+about**, such as which microphone or speaker is the default. There is no setting to write,
+because the OS chooses at runtime and keeps its choice when a better device appears. A laptop
+docked with its lid closed will go on recording from its own buried microphone while a working
+one sits attached, and an agent's voice input hears nothing. The fix is a small watcher that the
+setup repo installs as a per-machine scheduled job: it states the preference ("never the built-in
+mic while an external one is connected"), corrects only that case, and leaves any other
+deliberate choice alone. Verify it the same way as everything else: force the bad state and watch
+the watcher undo it.
+
 The trigger for adding something here is worth naming, because it usually arrives as an
 annoyance rather than a task: **when a stock default fights a habit, that is a setup defect, not
 a one-time fix.** The moment of noticing is the moment to push a row or a file to the setup repo.
