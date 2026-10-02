@@ -174,6 +174,7 @@ These are the same habits any distributed team uses; the only shift is applying 
 
 - [docs/bootstrap-report.md](docs/bootstrap-report.md): example of the three-bucket report format.
 - [docs/defect-issue.md](docs/defect-issue.md): example of a defect issue filed by the onboarding agent.
+- [docs/pooling-compute.md](docs/pooling-compute.md): using several machines' compute over a private network, and the tagging mistakes that lock you out.
 
 ## License
 
